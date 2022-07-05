@@ -57,13 +57,13 @@ func NewZapLoggerConfigFromEnv() *zap.Config {
 	}
 
 	encoderConfig := zapcore.EncoderConfig{
-		MessageKey:    os.Getenv("LOGGER_ENCODER_CONFIG_MESSAGE_KEY"),
-		LevelKey:      os.Getenv("LOGGER_ENCODER_CONFIG_LEVEL_KEY"),
-		TimeKey:       os.Getenv("LOGGER_ENCODER_CONFIG_TIME_KEY"),
-		NameKey:       os.Getenv("LOGGER_ENCODER_CONFIG_NAME_KEY"),
-		CallerKey:     os.Getenv("LOGGER_ENCODER_CONFIG_CALLER_KEY"),
-		FunctionKey:   os.Getenv("LOGGER_ENCODER_CONFIG_FUNCTION_KEY"),
-		StacktraceKey: os.Getenv("LOGGER_ENCODER_CONFIG_STACKTRACE_KEY"),
+		MessageKey:    os.Getenv("LOGGER_ENCODER_MESSAGE_KEY"),
+		LevelKey:      os.Getenv("LOGGER_ENCODER_LEVEL_KEY"),
+		TimeKey:       os.Getenv("LOGGER_ENCODER_TIME_KEY"),
+		NameKey:       os.Getenv("LOGGER_ENCODER_NAME_KEY"),
+		CallerKey:     os.Getenv("LOGGER_ENCODER_CALLER_KEY"),
+		FunctionKey:   os.Getenv("LOGGER_ENCODER_FUNCTION_KEY"),
+		StacktraceKey: os.Getenv("LOGGER_ENCODER_STACKTRACE_KEY"),
 	}
 
 	encoderConfig.EncodeLevel = zapcore.LowercaseLevelEncoder

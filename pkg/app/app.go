@@ -23,15 +23,15 @@ type App struct {
 	grpc_server *grpc.Server
 }
 
-func NewApp(config *Config) (*App, error) {
+func NewApp(cfg *Config) (*App, error) {
 	var app App
-	app.address = config.HTTP.Address()
+	app.address = cfg.HTTP.Address()
 
-	if err := config.Validate(); err != nil {
+	if err := cfg.Validate(); err != nil {
 		return nil, fmt.Errorf("failed to validate config, error = %v", err)
 	}
 
-	logger, err := config.ZapLogger.Build()
+	logger, err := cfg.ZapLogger.Build()
 	if err != nil {
 		return nil, fmt.Errorf("failed to start zap logger, error = %v", err)
 	}
@@ -42,7 +42,7 @@ func NewApp(config *Config) (*App, error) {
 	reflection.Register(grpc_server)
 
 	temporalOpts := client.Options{
-		HostPort: config.TemporalClient.HostPort,
+		HostPort: cfg.TemporalClient.HostPort,
 		Logger:   ZapToTemporalLogger(logger),
 	}
 
@@ -51,7 +51,7 @@ func NewApp(config *Config) (*App, error) {
 		return nil, fmt.Errorf("failed to create temporal client, error = %v", err)
 	}
 
-	service.RegisterLeaderseekServer(grpc_server, server.NewServer(logger, temporal, config.ServerConfig))
+	service.RegisterLeaderseekServer(grpc_server, server.NewServer(logger, temporal, cfg.ServerConfig))
 
 	app.grpc_server = grpc_server
 
