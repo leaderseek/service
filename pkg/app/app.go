@@ -2,13 +2,14 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/friendsofgo/errors"
 	"github.com/leaderseek/api-go/service"
+	"github.com/leaderseek/service/pkg/config"
 	"github.com/leaderseek/service/pkg/server"
 	"github.com/soheilhy/cmux"
 	"go.temporal.io/sdk/client"
@@ -23,17 +24,17 @@ type App struct {
 	grpc_server *grpc.Server
 }
 
-func NewApp(cfg *Config) (*App, error) {
+func NewApp(cfg *config.AppConfig) (*App, error) {
 	var app App
 	app.address = cfg.HTTP.Address()
 
 	if err := cfg.Validate(); err != nil {
-		return nil, fmt.Errorf("failed to validate config, error = %v", err)
+		return nil, errors.Wrap(err, "failed to validate config")
 	}
 
-	logger, err := cfg.ZapLogger.Build()
+	logger, err := cfg.Logger.ToZap().Build()
 	if err != nil {
-		return nil, fmt.Errorf("failed to start zap logger, error = %v", err)
+		return nil, errors.Wrap(err, "failed to start zap logger")
 	}
 
 	app.logger = logger
@@ -48,10 +49,10 @@ func NewApp(cfg *Config) (*App, error) {
 
 	temporal, err := client.Dial(temporalOpts)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create temporal client, error = %v", err)
+		return nil, errors.Wrap(err, "failed to dial temporal client")
 	}
 
-	service.RegisterLeaderseekServer(grpc_server, server.NewServer(logger, temporal, cfg.ServerConfig))
+	service.RegisterLeaderseekServer(grpc_server, server.NewServer(logger, temporal, cfg.Server))
 
 	app.grpc_server = grpc_server
 

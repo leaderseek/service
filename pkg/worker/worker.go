@@ -1,11 +1,11 @@
 package worker
 
 import (
-	"fmt"
-
+	"github.com/friendsofgo/errors"
 	"github.com/leaderseek/definition/activity/db"
 	"github.com/leaderseek/definition/workflow"
 	"github.com/leaderseek/service/pkg/app"
+	"github.com/leaderseek/service/pkg/config"
 	"github.com/leaderseek/service/pkg/task_queue"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
@@ -17,14 +17,14 @@ type Worker struct {
 	temporalWorker worker.Worker
 }
 
-func NewWorker(cfg *Config) (*Worker, error) {
+func NewWorker(cfg *config.WorkerConfig) (*Worker, error) {
 	if err := cfg.Validate(); err != nil {
-		return nil, fmt.Errorf("failed to validate config, error = %v", err)
+		return nil, errors.Wrap(err, "failed to validate config")
 	}
 
-	logger, err := cfg.ZapLogger.Build()
+	logger, err := cfg.Logger.ToZap().Build()
 	if err != nil {
-		return nil, fmt.Errorf("failed to start zap logger, error = %v", err)
+		return nil, errors.Wrap(err, "failed to start zap logger")
 	}
 
 	c, err := client.Dial(client.Options{
@@ -32,10 +32,12 @@ func NewWorker(cfg *Config) (*Worker, error) {
 		Logger:   app.ZapToTemporalLogger(logger),
 	})
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to dial temporal client")
 	}
 
-	w := worker.New(c, task_queue.Leaderseek, *cfg.TemporalWorkerOptions)
+	opts := cfg.TemporalWorkerOptions.ToTemporal()
+
+	w := worker.New(c, task_queue.Leaderseek, *opts)
 
 	return &Worker{logger: logger, temporalWorker: w}, nil
 }

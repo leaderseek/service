@@ -7,8 +7,8 @@ import (
 	sp "github.com/leaderseek/api-go/service/param"
 	"github.com/leaderseek/definition/workflow"
 	wp "github.com/leaderseek/definition/workflow/param"
+	"github.com/leaderseek/service/pkg/config"
 	"github.com/leaderseek/service/pkg/options"
-	"github.com/leaderseek/service/pkg/server/config"
 	"github.com/leaderseek/service/pkg/server/transform"
 	"go.temporal.io/sdk/client"
 	"go.uber.org/zap"
@@ -21,10 +21,10 @@ type Server struct {
 	service.UnimplementedLeaderseekServer
 	logger *zap.Logger
 	client client.Client
-	cfg    *config.Config
+	cfg    *config.ServerConfig
 }
 
-func NewServer(logger *zap.Logger, client client.Client, cfg *config.Config) *Server {
+func NewServer(logger *zap.Logger, client client.Client, cfg *config.ServerConfig) *Server {
 	return &Server{
 		logger: logger,
 		client: client,

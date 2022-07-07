@@ -3,14 +3,14 @@ package transform
 import (
 	sp "github.com/leaderseek/api-go/service/param"
 	wp "github.com/leaderseek/definition/workflow/param"
-	"github.com/leaderseek/service/pkg/server/config"
+	"github.com/leaderseek/service/pkg/config"
 	"github.com/leaderseek/sqlboiler/repository"
 )
 
-func TeamCreateRequest(cfg *config.Config, in *sp.TeamCreateRequest) *wp.TeamCreateRequest {
+func TeamCreateRequest(cfg *config.ServerConfig, in *sp.TeamCreateRequest) *wp.TeamCreateRequest {
 	out := new(wp.TeamCreateRequest)
 
-	out.DBConnectionString = cfg.DBConnectionString
+	out.DBConnectionString = cfg.DBConnection
 
 	out.Team = &repository.Team{
 		ID:          in.Team.ID,

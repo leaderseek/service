@@ -3,11 +3,17 @@ package main
 import (
 	"log"
 
+	"github.com/joho/godotenv"
+	"github.com/leaderseek/service/pkg/config"
 	"github.com/leaderseek/service/pkg/worker"
 )
 
 func main() {
-	cfg, err := worker.NewConfigFromEnv()
+	if err := godotenv.Load("./env/worker.env"); err != nil {
+		log.Fatalf("failed to load config to env, error = %v", err)
+	}
+
+	cfg, err := config.NewWorkerConfigFromEnv()
 	if err != nil {
 		log.Fatalf("failed to create config from env, error = %v", err)
 	}

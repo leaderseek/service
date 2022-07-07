@@ -3,13 +3,13 @@ package transform
 import (
 	sp "github.com/leaderseek/api-go/service/param"
 	wp "github.com/leaderseek/definition/workflow/param"
-	"github.com/leaderseek/service/pkg/server/config"
+	"github.com/leaderseek/service/pkg/config"
 )
 
-func TeamAddMembersRequest(cfg *config.Config, in *sp.TeamAddMembersRequest) *wp.TeamAddMembersRequest {
+func TeamAddMembersRequest(cfg *config.ServerConfig, in *sp.TeamAddMembersRequest) *wp.TeamAddMembersRequest {
 	out := new(wp.TeamAddMembersRequest)
 
-	out.DBConnectionString = cfg.DBConnectionString
+	out.DBConnectionString = cfg.DBConnection
 	out.TeamID = in.TeamID
 
 	for _, ip := range in.Players {
