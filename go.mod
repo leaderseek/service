@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
-	github.com/joho/godotenv v1.4.0
 	github.com/leaderseek/api-go v0.0.1
 	github.com/leaderseek/definition v0.0.1
 	github.com/leaderseek/sqlboiler v0.0.2
